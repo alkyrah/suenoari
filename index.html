@@ -1,54 +1,90 @@
-function generarSiestas(despertar, numeroSiestas){
-  const ultimoMin = 17*60 + 40; // 17:40 máximo
-  const dormirMin = 19*60; // 19:00 mínimo
-  let html = "";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Siestas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  // Calculamos tiempo disponible desde despertar hasta último límite
-  let tiempoDisponible = ultimoMin - despertar;
-  
-  // Duración mínima de siesta
-  let duracionSiestaMin = 30; // mínimo 30 min
-  let tempDespertar = despertar;
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
-  for(let i=1; i<=numeroSiestas; i++){
-    let inicio;
-
-    // Primera siesta
-    if(i === 1) {
-      inicio = tempDespertar + 60; // Primera siesta a los 60 minutos
-    } else {
-      // Intervalo de vigilia entre 90 y 120 minutos
-      let intervalo = 90 + Math.floor(Math.random() * 31); // aleatorio entre 90 y 120
-      inicio = tempDespertar + intervalo;
-    }
-
-    // Duración aleatoria
-    let duracion = 30 + Math.floor(Math.random() * 21);
-    // Ajuste para no pasarse
-    if(inicio + duracion > ultimoMin){
-      duracion = ultimoMin - inicio;
-      if(duracion < 30) duracion = 30; // forzar mínimo
-    }
-
-    let proximoDespertar = inicio + duracion;
-
-    html += "<div class='tarjeta'>";
-    html += "<div class='siesta'>Siesta "+i+": "+formatoHora(inicio)+"</div>";
-    html += "<div>Duración aprox: "+duracion+" min</div>";
-    html += "<div>Despertar aprox: "+formatoHora(proximoDespertar)+"</div>";
-    html += "</div>";
-
-    tempDespertar = proximoDespertar;
-  }
-
-  // Ventana final antes de dormir
-  let dormir = tempDespertar + 120;
-  if(dormir < 19*60) dormir = 19*60;
-  if(dormir > 20*60) dormir = 20*60;
-
-  html += "<div class='tarjeta dormir'>";
-  html += "🌙 Hora de dormir: "+formatoHora(dormir);
-  html += "</div>";
-
-  return html;
+<style>
+body{
+  font-family:Arial, sans-serif;
+  text-align:center;
+  margin:0;
+  padding:20px;
+  background:linear-gradient(135deg,#ffd6e8,#d6f0ff);
+  min-height:100vh;
 }
+
+h1{
+  font-family:'Dancing Script', cursive;
+  font-size:2.5em;
+  color:#ff6c9a;
+  text-shadow:2px 2px 5px #ffd6e8;
+  margin-bottom:20px;
+}
+
+.contenedor{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  max-width:450px;
+  margin:auto;
+}
+
+input,button{
+  width:80%;
+  padding:12px;
+  margin:10px;
+  font-size:16px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button{
+  background:#ff8fb3;
+  color:white;
+  border:none;
+  font-weight:bold;
+}
+
+.fila{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:10px 0;
+}
+
+.fila label{
+  font-weight:bold;
+}
+
+#inicioDiaBtn{
+  width:auto;
+  padding:6px 12px;
+  font-size:14px;
+  background:#ccc;
+  color:white;
+  margin:0;
+}
+
+#inicioDiaBtn.activo{
+  background:#6ccf8f;
+}
+
+.tarjeta{
+  background:#fff;
+  padding:12px;
+  margin:10px;
+  border-radius:12px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+.siesta{color:#ff6c9a;font-weight:bold;}
+.dormir{color:#5c6cff;font-weight:bold;font-size:18px;}
+.ventana{color:#888;font-size:14px;}
+</style>
+</head
