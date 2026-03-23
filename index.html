@@ -7,130 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-
-body{
-  font-family:Arial,sans-serif;
-  text-align:center;
-  padding:20px;
-  background:linear-gradient(135deg,#ffd6e8,#d6f0ff);
-  min-height:100vh;
-}
-
-h1{
-  font-family:'Dancing Script',cursive;
-  font-size:2.5em;
-  color:#ff6c9a;
-  text-shadow:2px 2px 5px #ffd6e8;
-  margin-bottom:20px;
-}
-
-.contenedor{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.15);
-  max-width:450px;
-  margin:auto;
-}
-
-.fila{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  margin:12px 0;
-}
-
-.fila label{
-  font-weight:bold;
-  font-size:15px;
-}
-
-input[type=time]{
-  padding:10px 14px;
-  font-size:16px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  width:130px;
-}
-
-.btn-principal{
-  width:80%;
-  padding:12px;
-  margin:12px auto;
-  font-size:16px;
-  border-radius:10px;
-  border:none;
-  background:#ff8fb3;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-  display:block;
-}
+body{font-family:Arial,sans-serif;text-align:center;padding:20px;background:linear-gradient(135deg,#ffd6e8,#d6f0ff);min-height:100vh;}
+h1{font-family:'Dancing Script',cursive;font-size:2.5em;color:#ff6c9a;text-shadow:2px 2px 5px #ffd6e8;margin-bottom:20px;}
+.contenedor{background:white;padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.15);max-width:450px;margin:auto;}
+.fila{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0;}
+.fila label{font-weight:bold;font-size:15px;}
+input[type=time]{padding:10px 14px;font-size:16px;border-radius:10px;border:1px solid #ccc;width:130px;}
+.btn-principal{width:80%;padding:12px;margin:12px auto;font-size:16px;border-radius:10px;border:none;background:#ff8fb3;color:white;font-weight:bold;cursor:pointer;display:block;}
 .btn-principal:hover{background:#ff6c9a;}
-
-#inicioDiaBtn{
-  padding:6px 14px;
-  font-size:14px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  background:#ddd;
-  color:#555;
-  cursor:pointer;
-  font-weight:bold;
-}
-#inicioDiaBtn.activo{
-  background:#6ccf8f;
-  border-color:#4ab877;
-  color:white;
-}
-
-.opts{
-  display:flex;
-  gap:8px;
-  margin:12px 0 6px;
-  justify-content:center;
-}
-.opt-btn{
-  flex:1;
-  max-width:160px;
-  padding:8px;
-  font-size:14px;
-  border:1px solid #ccc;
-  border-radius:10px;
-  background:#f5f5f5;
-  color:#666;
-  cursor:pointer;
-}
-.opt-btn.sel{
-  background:#fff0f5;
-  border-color:#ff8fb3;
-  color:#cc3366;
-  font-weight:bold;
-}
-
-.tarjeta{
-  background:#fff5f8;
-  padding:12px 14px;
-  margin:8px 0;
-  border-radius:12px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
-  text-align:left;
-}
-
+#inicioDiaBtn{padding:6px 14px;font-size:14px;border-radius:8px;border:1px solid #ccc;background:#ddd;color:#555;cursor:pointer;font-weight:bold;}
+#inicioDiaBtn.activo{background:#6ccf8f;border-color:#4ab877;color:white;}
+.opts{display:flex;gap:8px;margin:12px 0 6px;justify-content:center;}
+.opt-btn{flex:1;max-width:160px;padding:8px;font-size:14px;border:1px solid #ccc;border-radius:10px;background:#f5f5f5;color:#666;cursor:pointer;}
+.opt-btn.sel{background:#fff0f5;border-color:#ff8fb3;color:#cc3366;font-weight:bold;}
+.tarjeta{background:#fff5f8;padding:12px 14px;margin:8px 0;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);text-align:left;}
 .siesta{color:#ff6c9a;font-weight:bold;font-size:15px;}
-.ventana{color:#888;font-size:13px;margin-top:3px;}
-
-.tarjeta-dormir{
-  background:#eef0ff;
-  padding:12px 14px;
-  margin:10px 0 4px;
-  border-radius:12px;
-  border:1px solid #b5b9f4;
-  text-align:left;
-}
+.ventana{color:#888;font-size:13px;margin-top:4px;line-height:1.6;}
+.tarjeta-dormir{background:#eef0ff;padding:12px 14px;margin:10px 0 4px;border-radius:12px;border:1px solid #b5b9f4;text-align:left;}
 .dormir{color:#534AB7;font-weight:bold;font-size:16px;}
 .dormir-sub{color:#7F77DD;font-size:13px;margin-top:3px;}
+.nota{font-size:12px;color:#aaa;margin-top:8px;text-align:center;}
 </style>
 </head>
 <body>
@@ -138,80 +34,80 @@ input[type=time]{
 <h1>⭐ El Sueño de Ari ⭐</h1>
 
 <div class="contenedor">
-
   <div class="fila">
     <label>Hora último despertar</label>
     <input type="time" id="ultima" value="07:00">
   </div>
-
   <div class="fila">
     <label>Inicio del día</label>
     <button id="inicioDiaBtn" onclick="toggleInicioDia()">No</button>
   </div>
-
   <button class="btn-principal" onclick="calcular()">Generar día</button>
-
   <div id="resultado"></div>
-
 </div>
 
 <script>
 let inicioDiaActivo = false;
-let opcionActual = 3;
+
+const SLEEP_ONSET     = 25;        // min que tarda en dormirse (media 20-30)
+const VENTANA_PRIMERA = 60;        // tiempo real despierta antes de la 1a siesta
+const VENTANA_NORMAL  = 120;       // tiempo real despierta entre siestas
+const ULTIMO_ACOSTAR  = 17*60+40;  // acostarse para siesta max 17:40
+const DORMIR_MIN      = 19*60;     // dormida nocturna real min 19:00
+const DORMIR_MAX      = 20*60;     // dormida nocturna real max 20:00
 
 function toggleInicioDia(){
   inicioDiaActivo = !inicioDiaActivo;
   const btn = document.getElementById('inicioDiaBtn');
   btn.textContent = inicioDiaActivo ? 'Sí' : 'No';
-  btn.className = inicioDiaActivo ? 'activo' : '';
+  btn.className   = inicioDiaActivo ? 'activo' : '';
 }
 
 function fmt(min){
-  const h = Math.floor(min / 60) % 24;
+  const h = Math.floor(min/60) % 24;
   const m = min % 60;
   return h + ':' + (m < 10 ? '0' : '') + m;
 }
 
 function generarSiestas(despertar, numSiestas){
-  const VENTANA_PRIMERA = 60;
-  const VENTANA_NORMAL  = 90;
-  const VENTANA_MAX     = 120;
-  const ULTIMO_INICIO   = 17 * 60 + 40;
-  const DORMIR_MIN      = 19 * 60;
-  const DORMIR_MAX      = 20 * 60;
-
-  let t = despertar;
+  let t    = despertar;
   let html = '';
 
   for(let i = 1; i <= numSiestas; i++){
-    let ventana = (i === 1) ? VENTANA_PRIMERA : VENTANA_NORMAL;
-    let inicio = t + ventana;
+    const ventanaReal = (i === 1) ? VENTANA_PRIMERA : VENTANA_NORMAL;
+    // acostarse = t + ventanaReal - SLEEP_ONSET
+    // así la niña lleva exactamente ventanaReal min despierta cuando se queda dormida
+    const acostar  = t + ventanaReal - SLEEP_ONSET;
+    const duerme   = acostar + SLEEP_ONSET;
 
-    if(inicio > ULTIMO_INICIO){
-      inicio = t + VENTANA_MAX;
-      if(inicio > ULTIMO_INICIO + 30) break;
-    }
+    if(acostar > ULTIMO_ACOSTAR) break;
 
-    const duracion = 30 + Math.floor(Math.random() * 21);
-    const despertar2 = inicio + duracion;
-    const vReal = inicio - t;
+    const duracion  = 30 + Math.floor(Math.random() * 21);
+    const sigDespertar = duerme + duracion;
 
     html += `<div class="tarjeta">
-      <div class="siesta">Siesta ${i}: ${fmt(inicio)}</div>
-      <div class="ventana">Ventana: ${vReal} min &nbsp;·&nbsp; Duración aprox: ${duracion} min &nbsp;·&nbsp; Despertar: ${fmt(despertar2)}</div>
+      <div class="siesta">Siesta ${i}: acostarse ${fmt(acostar)} · se duerme ${fmt(duerme)}</div>
+      <div class="ventana">
+        Tiempo despierta: ${ventanaReal} min<br>
+        Duración siesta: ${duracion} min · Despertar: ${fmt(sigDespertar)}
+      </div>
     </div>`;
 
-    t = despertar2;
+    t = sigDespertar;
   }
 
-  let dormir = t + VENTANA_NORMAL;
-  if(dormir < DORMIR_MIN) dormir = DORMIR_MIN;
-  if(dormir > DORMIR_MAX) dormir = DORMIR_MAX;
-  const ventanaFinal = dormir - t;
+  // noche
+  let acostarNoche = t + VENTANA_NORMAL - SLEEP_ONSET;
+  let dormirReal   = acostarNoche + SLEEP_ONSET;
+
+  if(dormirReal < DORMIR_MIN){ dormirReal = DORMIR_MIN; acostarNoche = dormirReal - SLEEP_ONSET; }
+  if(dormirReal > DORMIR_MAX){ dormirReal = DORMIR_MAX; acostarNoche = dormirReal - SLEEP_ONSET; }
+
+  const ventanaFinal = acostarNoche - t + SLEEP_ONSET;
 
   html += `<div class="tarjeta-dormir">
-    <div class="dormir">🌙 Hora de dormir: ${fmt(dormir)}</div>
-    <div class="dormir-sub">Ventana final: ${ventanaFinal} min</div>
+    <div class="dormir">🌙 Acostarse: ${fmt(acostarNoche)} · se duerme: ${fmt(dormirReal)}</div>
+    <div class="dormir-sub">Tiempo despierta antes de dormir: ${ventanaFinal} min</div>
   </div>`;
 
   return html;
@@ -221,33 +117,30 @@ function calcular(){
   const val = document.getElementById('ultima').value;
   if(!val){ alert('Introduce la hora'); return; }
   const [h, m] = val.split(':').map(Number);
-  const despertar = h * 60 + m;
+  const despertar = h*60 + m;
 
-  // comprobar si caben 4 siestas
-  const cab4 = (despertar + 60 + 3 * 90 + 4 * 40) <= 18 * 60;
+  const cab4 = (despertar + 60 + 3*120 + 4*40) <= 18*60;
 
   const html3 = generarSiestas(despertar, 3);
   const html4 = cab4 ? generarSiestas(despertar, 4) : '';
 
-  let out = `<div class="opts">
-    <button class="opt-btn sel" id="opt3" onclick="selectOpt(3)">3 siestas</button>
-    ${cab4 ? '<button class="opt-btn" id="opt4" onclick="selectOpt(4)">4 siestas</button>' : ''}
-  </div>
-  <div id="naps3">${html3}</div>
-  ${cab4 ? `<div id="naps4" style="display:none">${html4}</div>` : ''}`;
-
-  document.getElementById('resultado').innerHTML = out;
-  opcionActual = 3;
+  document.getElementById('resultado').innerHTML = `
+    <div class="opts">
+      <button class="opt-btn sel" id="opt3" onclick="selectOpt(3)">3 siestas</button>
+      ${cab4 ? '<button class="opt-btn" id="opt4" onclick="selectOpt(4)">4 siestas</button>' : ''}
+    </div>
+    <div id="naps3">${html3}</div>
+    ${cab4 ? `<div id="naps4" style="display:none">${html4}</div>` : ''}
+    <p class="nota">Ventana real 120 min · se acuesta 25 min antes · primera siesta a los 60 min</p>`;
 }
 
 function selectOpt(n){
-  opcionActual = n;
-  document.getElementById('opt3').className = 'opt-btn' + (n === 3 ? ' sel' : '');
+  document.getElementById('opt3').className = 'opt-btn' + (n===3 ? ' sel' : '');
   const o4 = document.getElementById('opt4');
-  if(o4) o4.className = 'opt-btn' + (n === 4 ? ' sel' : '');
-  document.getElementById('naps3').style.display = n === 3 ? '' : 'none';
+  if(o4) o4.className = 'opt-btn' + (n===4 ? ' sel' : '');
+  document.getElementById('naps3').style.display = n===3 ? '' : 'none';
   const n4 = document.getElementById('naps4');
-  if(n4) n4.style.display = n === 4 ? '' : 'none';
+  if(n4) n4.style.display = n===4 ? '' : 'none';
 }
 </script>
 
