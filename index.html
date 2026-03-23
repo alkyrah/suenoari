@@ -74,7 +74,7 @@ function generarSiestas(despertar, numSiestas){
   let html = '';
 
   for(let i = 1; i <= numSiestas; i++){
-    const ventanaReal = (i === 1) ? VENTANA_PRIMERA : VENTANA_NORMAL;
+    const ventanaReal = (i === 1 && inicioDiaActivo) ? VENTANA_PRIMERA : VENTANA_NORMAL;
     // acostarse = t + ventanaReal - SLEEP_ONSET
     // así la niña lleva exactamente ventanaReal min despierta cuando se queda dormida
     const acostar  = t + ventanaReal - SLEEP_ONSET;
@@ -131,7 +131,7 @@ function calcular(){
     </div>
     <div id="naps3">${html3}</div>
     ${cab4 ? `<div id="naps4" style="display:none">${html4}</div>` : ''}
-    <p class="nota">Ventana real 120 min · se acuesta 25 min antes · primera siesta a los 60 min</p>`;
+    <p class="nota">Ventana real 120 min · se acuesta 25 min antes · primera siesta a los 60 min solo si es inicio del día</p>`;
 }
 
 function selectOpt(n){
