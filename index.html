@@ -187,7 +187,7 @@ input[type=time]:focus { outline: none; border-color: var(--rose); }
 </head>
 <body>
 
-<h1>✨ El Sueño de Ari ✨</h1>
+<h1>✨ El Sueño de Ari</h1>
 <p class="subtitulo">Planificador de siestas para bebé</p>
 
 <div class="contenedor">
@@ -423,7 +423,18 @@ function generarSecuencia(despPrimero, esPrimera, ventanaExtra, eventos) {
     }
 
     siestas.push(...siestasLocal);
-    tActual = ancla.min + P.margenEvento; // tras el evento el bebé lleva margenEvento min despierto
+    // tActual para el SIGUIENTE segmento = después del evento el bebé lleva margenEvento despierto
+    // Pero guardamos también el último despertar real para calcular la hora de dormir al final
+    const ultimoDespertarSegmento = siestasLocal.length > 0
+      ? siestasLocal[siestasLocal.length - 1].despertar
+      : tActual;
+    // El bebé estuvo despierto desde ultimoDespertarSegmento, pasó por el evento,
+    // y ahora lleva (ancla.min - ultimoDespertarSegmento + margenEvento) min despierto.
+    // Para el siguiente segmento, lo que importa es cuándo puede dormir la próxima siesta,
+    // contando desde ultimoDespertarSegmento (que es cuando realmente se despertó).
+    tActual = ultimoDespertarSegmento;
+    // Avanzamos tActual hasta después del evento si el evento aún no ha pasado
+    if (ancla.min > tActual) tActual = ancla.min + P.margenEvento;
     primerSeg = false;
   }
 
@@ -435,10 +446,12 @@ function generarSecuencia(despPrimero, esPrimera, ventanaExtra, eventos) {
     : tActual;
 
   // ── Hora de dormir ────────────────────────────────────────
-  let dormir = tActual + P.ventanaNoche;
+  // Usar el último despertar real de las siestas, no tActual (que puede incluir margen post-evento)
+  const ultDesp = siestas.length > 0 ? siestas[siestas.length - 1].despertar : despPrimero;
+  let dormir = ultDesp + P.ventanaNoche;
   if (dormir < P.dormirMin) dormir = P.dormirMin;
   if (dormir > P.dormirMax) dormir = P.dormirMax;
-  const ventanaFinal = dormir - tActual;
+  const ventanaFinal = dormir - ultDesp;
 
   return { siestas, dormir, ventanaFinal, advertencias };
 }
