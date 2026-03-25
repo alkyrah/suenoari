@@ -249,7 +249,7 @@ const P = {
 //  Dentro de cada segmento las siestas se reparten uniformemente,
 //  evitando que se apilen al principio.
 //
-function generarSecuencia(despPrimero, ventanaExtra, eventos) {
+function generarSecuencia(despPrimero, eventos, maxSiestas = Infinity) {
   const advertencias = [];
   const siestas = [];
 
@@ -257,26 +257,25 @@ function generarSecuencia(despPrimero, ventanaExtra, eventos) {
     .map(e => ({ min: e.min, nombre: e.nombre || fmt(e.min) }))
     .sort((a, b) => a.min - b.min);
 
-  function calcDur(idx, extra) {
-    return P.durMin + ((idx * 7 + extra) % (P.durMax - P.durMin + 1));
+  function calcDur(idx) {
+    return P.durMin + ((idx * 7) % (P.durMax - P.durMin + 1));
   }
 
-  // Rellena un segmento [tDesde, tHasta] con siestas distribuidas uniformemente.
-  // tHasta = el bebé debe estar DESPIERTO en ese minuto (= fin de la última siesta).
-  function rellenarSegmento(tDesde, tHasta, idxBase) {
+  // Rellena un segmento [tDesde, tHasta] con n siestas distribuidas uniformemente.
+  // Si maxRestantes limita cuántas pueden añadirse, se usa ese tope.
+  function rellenarSegmento(tDesde, tHasta, idxBase, maxRestantes) {
     const espacio = tHasta - tDesde;
-    // Cuántas siestas caben: cada una ocupa (ventanaMin + ventanaExtra + durMedia)
-    let n = Math.floor(espacio / (P.ventanaMin + ventanaExtra + P.durMedia));
+    let n = Math.floor(espacio / (P.ventanaMin + P.durMedia));
+    n = Math.min(n, maxRestantes);
     n = Math.max(0, n);
     if (n === 0) return [];
 
-    // Ventana uniforme: distribuir el espacio libre equitativamente
     const v = Math.floor((espacio - n * P.durMedia) / n);
     const result = [];
     let t = tDesde;
     for (let i = 0; i < n; i++) {
       const inicio = t + v;
-      const dur = calcDur(idxBase + i, ventanaExtra);
+      const dur = calcDur(idxBase + i);
       const despertar = inicio + dur;
       result.push({ inicio, dur, despertar, ventana: v });
       t = despertar;
@@ -289,24 +288,21 @@ function generarSecuencia(despPrimero, ventanaExtra, eventos) {
   let idxGlobal = 0;
 
   for (const ancla of anclas) {
-    // El bebé debe estar despierto margenEvento min antes del evento
     const tHasta = ancla.min - P.margenEvento;
-
     if (tHasta <= tActual) {
       advertencias.push(`❌ El evento "${ancla.nombre}" (${fmt(ancla.min)}) es demasiado pronto desde ${fmt(tActual)}.`);
     } else {
-      const nuevas = rellenarSegmento(tActual, tHasta, idxGlobal);
+      const nuevas = rellenarSegmento(tActual, tHasta, idxGlobal, maxSiestas - siestas.length);
       siestas.push(...nuevas);
       idxGlobal += nuevas.length;
     }
-    // Tras el evento el bebé lleva margenEvento despierto
     tActual = ancla.min + P.margenEvento;
   }
 
-  // Segmento final: desde tActual hasta el tope que deje ventanaNoche antes de dormirMin
+  // Segmento final
   const tHastaFinal = P.dormirMin - P.ventanaNoche;
   if (tHastaFinal > tActual) {
-    const nuevas = rellenarSegmento(tActual, tHastaFinal, idxGlobal);
+    const nuevas = rellenarSegmento(tActual, tHastaFinal, idxGlobal, maxSiestas - siestas.length);
     siestas.push(...nuevas);
   }
 
@@ -381,13 +377,11 @@ function calcular() {
   const despertar = h * 60 + m;
   const eventos = getEventos();
 
-  const seqA = generarSecuencia(despertar, 0,  eventos);
-  const seqB = generarSecuencia(despertar, 10, eventos);
+  const seqA = generarSecuencia(despertar, eventos);
+  const nB = Math.max(0, seqA.siestas.length - 1);
+  const seqB = generarSecuencia(despertar, eventos, nB);
 
-  const distintas = seqA.siestas.length !== seqB.siestas.length
-    || seqA.dormir !== seqB.dormir
-    || (seqA.siestas.length > 0 && seqB.siestas.length > 0 &&
-        seqA.siestas[0].inicio !== seqB.siestas[0].inicio);
+  const distintas = seqA.siestas.length !== seqB.siestas.length;
 
   let out = '';
   if (distintas) {
