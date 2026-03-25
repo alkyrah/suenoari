@@ -66,21 +66,6 @@ input[type=time] {
   transition: border-color .2s;
 }
 input[type=time]:focus { outline: none; border-color: var(--rose); }
-.switch-wrap { display: flex; align-items: center; gap: 10px; }
-.switch { position: relative; width: 48px; height: 26px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-  position: absolute; inset: 0; background: #ddd;
-  border-radius: 26px; cursor: pointer; transition: background .25s;
-}
-.slider::before {
-  content: ''; position: absolute; width: 20px; height: 20px;
-  left: 3px; top: 3px; background: white; border-radius: 50%;
-  transition: transform .25s; box-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
-.switch input:checked + .slider { background: var(--mint); }
-.switch input:checked + .slider::before { transform: translateX(22px); }
-.switch-lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
 .seccion-titulo {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 1px; color: var(--muted);
@@ -195,16 +180,6 @@ input[type=time]:focus { outline: none; border-color: var(--rose); }
     <label>Hora último despertar</label>
     <input type="time" id="ultima" value="07:00">
   </div>
-  <div class="campo">
-    <label>¿Es el inicio del día?</label>
-    <div class="switch-wrap">
-      <label class="switch">
-        <input type="checkbox" id="inicioDia">
-        <span class="slider"></span>
-      </label>
-      <span class="switch-lbl" id="switchLbl">No</span>
-    </div>
-  </div>
 
   <div class="seccion-titulo">Eventos del día</div>
   <div id="eventosLista"></div>
@@ -217,10 +192,6 @@ input[type=time]:focus { outline: none; border-color: var(--rose); }
 </div>
 
 <script>
-document.getElementById('inicioDia').addEventListener('change', function(){
-  document.getElementById('switchLbl').textContent = this.checked ? 'Sí' : 'No';
-});
-
 // ── Eventos ──────────────────────────────────────────────────
 let eventoId = 0;
 function addEvento() {
@@ -260,13 +231,12 @@ function fmt(min) {
 
 // ── Parámetros ───────────────────────────────────────────────
 const P = {
-  ventanaPrimera: 60,   // ventana mínima tras el despertar inicial del día
-  ventanaMin:     75,   // ventana mínima entre cualquier despertar y siguiente siesta
-  ventanaNoche:   90,   // ventana antes de dormir por la noche
+  ventanaMin:     75,
+  ventanaNoche:   90,
   durMin:         25,
   durMax:         50,
-  durMedia:       35,   // duración usada para calcular hacia atrás desde eventos
-  margenEvento:   20,   // minutos despierto que necesita antes del evento
+  durMedia:       35,
+  margenEvento:   20,
   ultimoInicioS: 17 * 60 + 30,
   dormirMin:     19 * 60,
   dormirMax:     20 * 60,
@@ -274,179 +244,73 @@ const P = {
 
 // ── Algoritmo principal ──────────────────────────────────────
 //
-//  Idea clave: los eventos son ANCLAS.
-//  Para cada segmento entre anclas (despertar→evento, evento→evento,
-//  evento→noche) el algoritmo sabe:
-//    - desde qué minuto puede empezar a colocar siestas (t_inicio)
-//    - hasta qué minuto debe haber terminado la última siesta (t_fin)
-//  Y rellena ese hueco con tantas siestas como quepan respetando
-//  ventanas mínimas y máximas.
+//  Estrategia: distribución uniforme POR SEGMENTOS.
+//  Los eventos actúan como anclas que dividen el día en segmentos.
+//  Dentro de cada segmento las siestas se reparten uniformemente,
+//  evitando que se apilen al principio.
 //
-//  La siesta inmediatamente anterior a un evento se ancla para que
-//  su DESPERTAR = evento - margenEvento.
-//
-function generarSecuencia(despPrimero, esPrimera, ventanaExtra, eventos) {
+function generarSecuencia(despPrimero, ventanaExtra, eventos) {
   const advertencias = [];
-  const siestas = [];     // { inicio, dur, despertar, ventana, label? }
+  const siestas = [];
 
-  // Construir lista de "anclas": momentos a los que el bebé debe estar despierto
-  // Cada ancla: { min, nombre, esEvento }
-  const anclas = eventos.map(e => ({
-    min: e.min,
-    nombre: e.nombre || fmt(e.min),
-    esEvento: true,
-  }));
-  // Ancla final: hora de dormir (la calcularemos al final, aquí ponemos el máximo)
-  // No la añadimos como ancla dura; la manejamos al cerrar.
+  const anclas = eventos
+    .map(e => ({ min: e.min, nombre: e.nombre || fmt(e.min) }))
+    .sort((a, b) => a.min - b.min);
 
-  // Ordenar anclas
-  anclas.sort((a, b) => a.min - b.min);
-
-  // Segmentos: [ [t_desde, t_hasta_despertar, anclaOrigen], ... ]
-  // t_desde  = minuto desde el que el bebé está despierto al inicio del segmento
-  // t_hasta  = minuto en que debe estar despierto para el siguiente ancla
-  //            (= ancla.min - margenEvento)  →  es el tope del DESPERTAR de la última siesta
-  // Si no hay anclas → un solo segmento hasta la noche.
-
-  // Función que rellena siestas en un segmento
-  function rellenarSegmento(tDesde, tHastaDesp, esPrimeraSeg, etiquetaFin) {
-    // tHastaDesp: la última siesta del segmento debe DESPERTAR antes de este minuto
-    // Si tHastaDesp es null → solo limitamos por ultimoInicioS y dormirMax
-
-    let t = tDesde;
-    let numLocal = 0;
-    const siestasLocal = [];
-
-    while (true) {
-      numLocal++;
-      const ventana = (numLocal === 1 && esPrimeraSeg)
-        ? P.ventanaPrimera
-        : P.ventanaMin + ventanaExtra;
-
-      const inicioCandiato = t + ventana;
-
-      // Si hay un tope de despertar (ancla de evento):
-      // La siesta debe terminar (despertar) ≤ tHastaDesp
-      // → inicio + durMedia ≤ tHastaDesp
-      // → inicio ≤ tHastaDesp - durMedia
-      if (tHastaDesp !== null) {
-        const inicioMax = tHastaDesp - P.durMedia;
-
-        if (inicioCandiato > inicioMax) {
-          // No cabe ninguna siesta más en este segmento antes del evento
-          break;
-        }
-
-        // ¿Cabe exactamente una más que termine justo a tiempo?
-        // Colocamos la siesta lo más tarde posible para maximizar la ventana:
-        // pero respetando ventanaMin desde t.
-        // Comprobamos también si después de esta siesta cabe otra.
-        const finSiesta = inicioCandiato + P.durMedia;
-        const margenParaOtra = tHastaDesp - finSiesta - P.ventanaMin - P.durMedia;
-
-        // Si ya no cabría otra siesta más (margenParaOtra < 0),
-        // anclamos esta última siesta para que despierte exactamente a tHastaDesp.
-        // inicio = tHastaDesp - dur
-        let inicioFinal = inicioCandiato;
-        if (margenParaOtra < 0) {
-          // Esta es la última del segmento → anclarla al evento
-          inicioFinal = tHastaDesp - P.durMedia;
-          if (inicioFinal < t + P.ventanaMin - 5) {
-            // La ventana resultante sería demasiado corta → no cabe
-            break;
-          }
-        }
-
-        const vReal = inicioFinal - t;
-        if (vReal < P.ventanaMin * 0.7) break; // ventana demasiado corta
-
-        const dur = calcDur(siestas.length + siestasLocal.length, ventanaExtra);
-        const despertar2 = inicioFinal + dur;
-        siestasLocal.push({ inicio: inicioFinal, dur, despertar: despertar2, ventana: vReal });
-        t = despertar2;
-
-        // Si ya llegamos al tope, salimos
-        if (t >= tHastaDesp - 5) break;
-
-      } else {
-        // Sin tope de ancla → límite normal (hora de dormir)
-        if (inicioCandiato > P.ultimoInicioS) break;
-        const finEstimado = inicioCandiato + P.durMedia;
-        if (finEstimado + P.ventanaNoche > P.dormirMax + 25) break;
-
-        const dur = calcDur(siestas.length + siestasLocal.length, ventanaExtra);
-        const despertar2 = inicioCandiato + dur;
-        siestasLocal.push({ inicio: inicioCandiato, dur, despertar: despertar2, ventana: ventana + ventanaExtra });
-        t = despertar2;
-
-        if (t + P.ventanaMin > P.ultimoInicioS) break;
-      }
-    }
-
-    return { siestasLocal, tFinal: t };
-  }
-
-  // Duración decorativa reproducible
   function calcDur(idx, extra) {
     return P.durMin + ((idx * 7 + extra) % (P.durMax - P.durMin + 1));
   }
 
-  // ── Procesar segmentos ────────────────────────────────────
-  let tActual = despPrimero;
-  let primerSeg = true;
+  // Rellena un segmento [tDesde, tHasta] con siestas distribuidas uniformemente.
+  // tHasta = el bebé debe estar DESPIERTO en ese minuto (= fin de la última siesta).
+  function rellenarSegmento(tDesde, tHasta, idxBase) {
+    const espacio = tHasta - tDesde;
+    // Cuántas siestas caben: cada una ocupa (ventanaMin + ventanaExtra + durMedia)
+    let n = Math.floor(espacio / (P.ventanaMin + ventanaExtra + P.durMedia));
+    n = Math.max(0, n);
+    if (n === 0) return [];
 
-  for (let i = 0; i < anclas.length; i++) {
-    const ancla = anclas[i];
-    const tHastaDesp = ancla.min - P.margenEvento; // el bebé debe estar despierto aquí
-
-    // Validar que el evento no sea demasiado pronto
-    if (tHastaDesp <= tActual) {
-      advertencias.push(`❌ El evento "${ancla.nombre}" (${fmt(ancla.min)}) es demasiado pronto: el bebé ya estaría despierto desde ${fmt(tActual)}. No hace falta ajustar nada, pero revisa el horario.`);
-      // Continuar con tActual como está
-      continue;
+    // Ventana uniforme: distribuir el espacio libre equitativamente
+    const v = Math.floor((espacio - n * P.durMedia) / n);
+    const result = [];
+    let t = tDesde;
+    for (let i = 0; i < n; i++) {
+      const inicio = t + v;
+      const dur = calcDur(idxBase + i, ventanaExtra);
+      const despertar = inicio + dur;
+      result.push({ inicio, dur, despertar, ventana: v });
+      t = despertar;
     }
-
-    const { siestasLocal, tFinal } = rellenarSegmento(tActual, tHastaDesp, primerSeg, ancla.nombre);
-
-    // Comprobar que la última siesta despierta a tiempo
-    if (siestasLocal.length > 0) {
-      const ultima = siestasLocal[siestasLocal.length - 1];
-      if (ultima.despertar > tHastaDesp + 2) {
-        advertencias.push(`⚠️ No es posible encajar una siesta que despierte exactamente 20 min antes del evento "${ancla.nombre}". La siesta más cercana termina a las ${fmt(ultima.despertar)}.`);
-      }
-    } else {
-      // Sin siestas en este segmento — ¿la ventana es suficientemente grande?
-      const ventanaDisponible = tHastaDesp - tActual;
-      if (ventanaDisponible < P.ventanaMin + P.durMin) {
-        advertencias.push(`ℹ️ No cabe ninguna siesta entre ${fmt(tActual)} y el evento "${ancla.nombre}" (${fmt(ancla.min)}): la ventana disponible (${ventanaDisponible} min) es demasiado corta.`);
-      }
-    }
-
-    siestas.push(...siestasLocal);
-    // tActual para el SIGUIENTE segmento = después del evento el bebé lleva margenEvento despierto
-    // Pero guardamos también el último despertar real para calcular la hora de dormir al final
-    const ultimoDespertarSegmento = siestasLocal.length > 0
-      ? siestasLocal[siestasLocal.length - 1].despertar
-      : tActual;
-    // El bebé estuvo despierto desde ultimoDespertarSegmento, pasó por el evento,
-    // y ahora lleva (ancla.min - ultimoDespertarSegmento + margenEvento) min despierto.
-    // Para el siguiente segmento, lo que importa es cuándo puede dormir la próxima siesta,
-    // contando desde ultimoDespertarSegmento (que es cuando realmente se despertó).
-    tActual = ultimoDespertarSegmento;
-    // Avanzamos tActual hasta después del evento si el evento aún no ha pasado
-    if (ancla.min > tActual) tActual = ancla.min + P.margenEvento;
-    primerSeg = false;
+    return result;
   }
 
-  // ── Segmento final: desde tActual hasta la noche ──────────
-  const { siestasLocal: siestasFinales } = rellenarSegmento(tActual, null, primerSeg, 'noche');
-  siestas.push(...siestasFinales);
-  tActual = siestasFinales.length > 0
-    ? siestasFinales[siestasFinales.length-1].despertar
-    : tActual;
+  // Construir segmentos usando las anclas de eventos
+  let tActual = despPrimero;
+  let idxGlobal = 0;
 
-  // ── Hora de dormir ────────────────────────────────────────
-  // Usar el último despertar real de las siestas, no tActual (que puede incluir margen post-evento)
+  for (const ancla of anclas) {
+    // El bebé debe estar despierto margenEvento min antes del evento
+    const tHasta = ancla.min - P.margenEvento;
+
+    if (tHasta <= tActual) {
+      advertencias.push(`❌ El evento "${ancla.nombre}" (${fmt(ancla.min)}) es demasiado pronto desde ${fmt(tActual)}.`);
+    } else {
+      const nuevas = rellenarSegmento(tActual, tHasta, idxGlobal);
+      siestas.push(...nuevas);
+      idxGlobal += nuevas.length;
+    }
+    // Tras el evento el bebé lleva margenEvento despierto
+    tActual = ancla.min + P.margenEvento;
+  }
+
+  // Segmento final: desde tActual hasta el tope que deje ventanaNoche antes de dormirMin
+  const tHastaFinal = P.dormirMin - P.ventanaNoche;
+  if (tHastaFinal > tActual) {
+    const nuevas = rellenarSegmento(tActual, tHastaFinal, idxGlobal);
+    siestas.push(...nuevas);
+  }
+
+  // Hora de dormir
   const ultDesp = siestas.length > 0 ? siestas[siestas.length - 1].despertar : despPrimero;
   let dormir = ultDesp + P.ventanaNoche;
   if (dormir < P.dormirMin) dormir = P.dormirMin;
@@ -465,7 +329,6 @@ function renderSecuencia(seq, eventos) {
     html += `<div class="alerta ${cls}">${a}</div>`;
   });
 
-  // Mezclar siestas + eventos en timeline
   const items = [];
   seq.siestas.forEach((s, i) => items.push({ tipo: 'siesta', idx: i+1, min: s.inicio, data: s }));
   eventos.forEach(ev => items.push({ tipo: 'evento', min: ev.min, data: ev }));
@@ -516,11 +379,10 @@ function calcular() {
   if (!val) { alert('Introduce la hora del último despertar'); return; }
   const [h, m] = val.split(':').map(Number);
   const despertar = h * 60 + m;
-  const esPrimera = document.getElementById('inicioDia').checked;
   const eventos = getEventos();
 
-  const seqA = generarSecuencia(despertar, esPrimera, 0,  eventos);
-  const seqB = generarSecuencia(despertar, esPrimera, 10, eventos);
+  const seqA = generarSecuencia(despertar, 0,  eventos);
+  const seqB = generarSecuencia(despertar, 10, eventos);
 
   const distintas = seqA.siestas.length !== seqB.siestas.length
     || seqA.dormir !== seqB.dormir
