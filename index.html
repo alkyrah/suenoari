@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --rose:    #f06292;
   --rose-lt: #fce4ec;
@@ -15,7 +14,8 @@
   --lav:     #9575cd;
   --lav-lt:  #ede7f6;
   --mint:    #4db6ac;
-  --mint-lt: #e0f2f1;
+  --amber:   #ffb300;
+  --amber-lt:#fff8e1;
   --sky:     #64b5f6;
   --sky-lt:  #e3f2fd;
   --ink:     #37274a;
@@ -24,7 +24,6 @@
   --bg:      #fdf4f9;
   --shadow:  0 4px 18px rgba(192,110,152,0.13);
 }
-
 body {
   font-family: 'Nunito', sans-serif;
   background: var(--bg);
@@ -34,7 +33,6 @@ body {
     radial-gradient(circle at 10% 20%, #fce4ec88 0%, transparent 45%),
     radial-gradient(circle at 90% 80%, #ede7f688 0%, transparent 45%);
 }
-
 h1 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(1.8em, 6vw, 2.6em);
@@ -44,13 +42,9 @@ h1 {
   letter-spacing: -0.5px;
 }
 .subtitulo {
-  text-align: center;
-  color: var(--muted);
-  font-size: 14px;
-  margin-bottom: 26px;
-  font-style: italic;
+  text-align: center; color: var(--muted);
+  font-size: 14px; margin-bottom: 26px; font-style: italic;
 }
-
 .contenedor {
   background: var(--card);
   padding: 24px 22px 28px;
@@ -59,161 +53,135 @@ h1 {
   max-width: 460px;
   margin: auto;
 }
-
-/* ── Campos ── */
 .campo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 14px 0;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; margin: 14px 0;
 }
-.campo label {
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--ink);
-  flex: 1;
-}
-
+.campo label { font-weight: 700; font-size: 14px; color: var(--ink); flex: 1; }
 input[type=time] {
-  padding: 10px 14px;
-  font-size: 15px;
+  padding: 10px 14px; font-size: 15px;
   font-family: 'Nunito', sans-serif;
-  border-radius: 12px;
-  border: 2px solid #e8d5ee;
-  background: #fff9fd;
-  color: var(--ink);
-  width: 130px;
+  border-radius: 12px; border: 2px solid #e8d5ee;
+  background: #fff9fd; color: var(--ink); width: 130px;
   transition: border-color .2s;
 }
 input[type=time]:focus { outline: none; border-color: var(--rose); }
-
-/* toggle switch */
 .switch-wrap { display: flex; align-items: center; gap: 10px; }
-.switch {
-  position: relative; width: 48px; height: 26px;
-}
+.switch { position: relative; width: 48px; height: 26px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
-  position: absolute; inset: 0;
-  background: #ddd; border-radius: 26px;
-  cursor: pointer; transition: background .25s;
+  position: absolute; inset: 0; background: #ddd;
+  border-radius: 26px; cursor: pointer; transition: background .25s;
 }
 .slider::before {
-  content: '';
-  position: absolute; width: 20px; height: 20px;
-  left: 3px; top: 3px;
-  background: white; border-radius: 50%;
-  transition: transform .25s;
-  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  content: ''; position: absolute; width: 20px; height: 20px;
+  left: 3px; top: 3px; background: white; border-radius: 50%;
+  transition: transform .25s; box-shadow: 0 1px 4px rgba(0,0,0,.2);
 }
 .switch input:checked + .slider { background: var(--mint); }
 .switch input:checked + .slider::before { transform: translateX(22px); }
 .switch-lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
-
-/* botón principal */
+.seccion-titulo {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted);
+  margin: 20px 0 10px; display: flex; align-items: center; gap: 8px;
+}
+.seccion-titulo::after { content: ''; flex: 1; height: 1px; background: #f0e6f6; }
+.btn-add-evento {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px; font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 700;
+  border: 2px dashed #e0c8f0; border-radius: 12px;
+  background: transparent; color: var(--lav);
+  cursor: pointer; transition: all .2s; width: 100%; justify-content: center;
+}
+.btn-add-evento:hover { background: var(--lav-lt); border-color: var(--lav); }
+.evento-item {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--amber-lt); border: 1.5px solid #ffe082;
+  border-radius: 12px; padding: 10px 12px; margin: 8px 0;
+  animation: fadeUp .25s ease both;
+}
+.evento-item input[type=time] {
+  border-color: #ffe082; background: #fffbf0;
+  width: 118px; padding: 7px 10px; font-size: 14px;
+}
+.evento-item input[type=text] {
+  flex: 1; padding: 7px 10px; font-size: 13px;
+  font-family: 'Nunito', sans-serif; border-radius: 10px;
+  border: 1.5px solid #ffe082; background: #fffbf0;
+  color: var(--ink); min-width: 0;
+}
+.evento-item input[type=text]:focus { outline: none; border-color: var(--amber); }
+.btn-del {
+  background: none; border: none; cursor: pointer;
+  font-size: 18px; line-height: 1; color: #d97706;
+  padding: 2px 4px; border-radius: 6px;
+  transition: background .15s; flex-shrink: 0;
+}
+.btn-del:hover { background: #fde68a; }
 .btn-calc {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  border: none;
-  border-radius: 14px;
+  display: block; width: 100%; margin-top: 20px; padding: 14px;
+  font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 700;
+  border: none; border-radius: 14px;
   background: linear-gradient(135deg, var(--rose), var(--lav));
-  color: white;
-  cursor: pointer;
-  letter-spacing: .3px;
+  color: white; cursor: pointer; letter-spacing: .3px;
   transition: opacity .2s, transform .1s;
   box-shadow: 0 4px 14px rgba(192,110,152,.35);
 }
 .btn-calc:hover { opacity: .9; }
 .btn-calc:active { transform: scale(.98); }
-
-/* pestañas de opciones */
-.tabs {
-  display: flex; gap: 8px;
-  margin: 20px 0 14px;
-}
+.tabs { display: flex; gap: 8px; margin: 20px 0 14px; }
 .tab {
-  flex: 1; padding: 9px 6px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px; font-weight: 700;
-  border: 2px solid #e0d0ea;
-  border-radius: 12px;
-  background: #faf5ff;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .2s;
+  flex: 1; padding: 9px 6px; font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 700; border: 2px solid #e0d0ea;
+  border-radius: 12px; background: #faf5ff; color: var(--muted);
+  cursor: pointer; transition: all .2s;
 }
-.tab.activa {
-  background: var(--rose-lt);
-  border-color: var(--rose);
-  color: var(--rose-dk);
+.tab.activa { background: var(--rose-lt); border-color: var(--rose); color: var(--rose-dk); }
+.timeline { position: relative; padding-left: 28px; margin: 4px 0; }
+.timeline::before {
+  content: ''; position: absolute;
+  left: 10px; top: 16px; bottom: 16px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--rose-lt), var(--lav-lt));
+  border-radius: 2px;
 }
-
-/* tarjetas de siesta */
+.tl-item { position: relative; margin: 8px 0; animation: fadeUp .3s ease both; }
+.tl-dot {
+  position: absolute; left: -22px; top: 13px;
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1.5px currentColor;
+}
 .siesta-card {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: var(--rose-lt);
-  border-left: 4px solid var(--rose);
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin: 8px 0;
-  animation: fadeUp .3s ease both;
+  background: var(--rose-lt); border-left: 4px solid var(--rose);
+  padding: 11px 14px; border-radius: 12px;
 }
-.siesta-num {
-  background: var(--rose);
-  color: white;
-  font-size: 12px; font-weight: 700;
-  border-radius: 50%;
-  width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
+.siesta-card .hora { font-size: 15px; font-weight: 700; color: var(--rose-dk); }
+.siesta-card .detalle { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.6; }
+.evento-card {
+  background: var(--amber-lt); border-left: 4px solid var(--amber);
+  padding: 11px 14px; border-radius: 12px;
 }
-.siesta-info .hora { font-size: 16px; font-weight: 700; color: var(--rose-dk); }
-.siesta-info .detalle { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
-
-/* tarjeta dormir */
+.evento-card .hora { font-size: 15px; font-weight: 700; color: #92400e; }
+.evento-card .detalle { font-size: 12px; color: #b45309; margin-top: 2px; }
 .dormir-card {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: var(--lav-lt);
-  border-left: 4px solid var(--lav);
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin: 14px 0 4px;
-  animation: fadeUp .3s ease both;
+  background: var(--lav-lt); border-left: 4px solid var(--lav);
+  padding: 12px 14px; border-radius: 12px; margin-top: 10px;
 }
-.dormir-icon {
-  font-size: 22px; line-height: 1;
-  flex-shrink: 0; margin-top: 1px;
+.dormir-card .hora { font-size: 16px; font-weight: 700; color: var(--lav); }
+.dormir-card .detalle { font-size: 12px; color: #7c6faa; margin-top: 2px; }
+.alerta {
+  border-radius: 12px; padding: 11px 14px;
+  font-size: 13px; font-weight: 600; margin: 8px 0; line-height: 1.5;
 }
-.dormir-info .hora { font-size: 17px; font-weight: 700; color: var(--lav); }
-.dormir-info .detalle { font-size: 12px; color: #7c6faa; margin-top: 2px; }
-
-/* aviso sin siestas */
-.aviso {
-  background: var(--sky-lt);
-  border-left: 4px solid var(--sky);
-  border-radius: 12px;
-  padding: 12px 14px;
-  color: #1e6fa8;
-  font-size: 13px;
-  font-weight: 600;
-  margin: 10px 0;
-}
-
+.alerta-warn { background: var(--amber-lt); border-left: 4px solid var(--amber); color: #92400e; }
+.alerta-info { background: var(--sky-lt);   border-left: 4px solid var(--sky);   color: #1e6fa8; }
+.alerta-err  { background: #fce4ec;          border-left: 4px solid #e57373;      color: #b71c1c; }
+.divider { height: 1px; background: #f0e6f6; margin: 18px 0 4px; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-.divider {
-  height: 1px; background: #f0e6f6;
-  margin: 20px 0 4px;
 }
 </style>
 </head>
@@ -223,12 +191,10 @@ input[type=time]:focus { outline: none; border-color: var(--rose); }
 <p class="subtitulo">Planificador de siestas para bebé</p>
 
 <div class="contenedor">
-
   <div class="campo">
     <label>Hora último despertar</label>
     <input type="time" id="ultima" value="07:00">
   </div>
-
   <div class="campo">
     <label>¿Es el inicio del día?</label>
     <div class="switch-wrap">
@@ -240,151 +206,324 @@ input[type=time]:focus { outline: none; border-color: var(--rose); }
     </div>
   </div>
 
-  <button class="btn-calc" onclick="calcular()">Generar día ✦</button>
+  <div class="seccion-titulo">Eventos del día</div>
+  <div id="eventosLista"></div>
+  <button class="btn-add-evento" onclick="addEvento()">
+    <span style="font-size:18px;line-height:1">＋</span> Añadir evento
+  </button>
 
+  <button class="btn-calc" onclick="calcular()">Generar día ✦</button>
   <div id="resultado"></div>
 </div>
 
 <script>
-// ── Actualizar etiqueta del toggle ──────────────────────────
 document.getElementById('inicioDia').addEventListener('change', function(){
   document.getElementById('switchLbl').textContent = this.checked ? 'Sí' : 'No';
 });
 
-// ── Formatear minutos → "H:MM" ──────────────────────────────
+// ── Eventos ──────────────────────────────────────────────────
+let eventoId = 0;
+function addEvento() {
+  const id = eventoId++;
+  const div = document.createElement('div');
+  div.className = 'evento-item';
+  div.id = 'ev-' + id;
+  div.innerHTML = `
+    <span style="font-size:16px;flex-shrink:0">🗓</span>
+    <input type="time" id="ev-hora-${id}" value="11:00">
+    <input type="text"  id="ev-nombre-${id}" placeholder="Nombre (opcional)" maxlength="40">
+    <button class="btn-del" onclick="delEvento(${id})">×</button>
+  `;
+  document.getElementById('eventosLista').appendChild(div);
+}
+function delEvento(id) {
+  const el = document.getElementById('ev-' + id);
+  if (el) el.remove();
+}
+function getEventos() {
+  return Array.from(document.querySelectorAll('.evento-item')).map(el => {
+    const id = el.id.replace('ev-', '');
+    const horaEl = document.getElementById('ev-hora-' + id);
+    if (!horaEl || !horaEl.value) return null;
+    const [h, m] = horaEl.value.split(':').map(Number);
+    const nombreEl = document.getElementById('ev-nombre-' + id);
+    return { min: h * 60 + m, nombre: nombreEl ? nombreEl.value.trim() : '' };
+  }).filter(Boolean).sort((a, b) => a.min - b.min);
+}
+
+// ── Utilidades ───────────────────────────────────────────────
 function fmt(min) {
   const h = Math.floor(min / 60) % 24;
   const m = min % 60;
   return h + ':' + (m < 10 ? '0' : '') + m;
 }
 
-// ── Parámetros globales ─────────────────────────────────────
+// ── Parámetros ───────────────────────────────────────────────
 const P = {
-  ventanaPrimera: 60,   // ventana mínima tras el primer despertar del día
-  ventanaMin:     75,   // ventana mínima entre siestas (resto del día)
-  ventanaMax:    120,   // ventana máxima permitida entre siestas
-  ventanaNoche:   90,   // ventana ideal antes de dormir por la noche
-  durMin:         25,   // duración mínima siesta
-  durMax:         50,   // duración máxima siesta (aprox.)
-  ultimoInicioS: 17*60+30, // última hora a la que puede COMENZAR una siesta
-  dormirMin:     19*60,     // hora mínima de acostarse por la noche
-  dormirMax:     20*60,     // hora máxima de acostarse por la noche
+  ventanaPrimera: 60,   // ventana mínima tras el despertar inicial del día
+  ventanaMin:     75,   // ventana mínima entre cualquier despertar y siguiente siesta
+  ventanaNoche:   90,   // ventana antes de dormir por la noche
+  durMin:         25,
+  durMax:         50,
+  durMedia:       35,   // duración usada para calcular hacia atrás desde eventos
+  margenEvento:   20,   // minutos despierto que necesita antes del evento
+  ultimoInicioS: 17 * 60 + 30,
+  dormirMin:     19 * 60,
+  dormirMax:     20 * 60,
 };
 
-// ── Genera una secuencia de siestas a partir de un despertar ─
-// Devuelve null si no puede cerrar el día correctamente.
-function generarSecuencia(despertar, esPrimera, offset) {
-  // offset: variación opcional para generar alternativas (en minutos)
-  offset = offset || 0;
+// ── Algoritmo principal ──────────────────────────────────────
+//
+//  Idea clave: los eventos son ANCLAS.
+//  Para cada segmento entre anclas (despertar→evento, evento→evento,
+//  evento→noche) el algoritmo sabe:
+//    - desde qué minuto puede empezar a colocar siestas (t_inicio)
+//    - hasta qué minuto debe haber terminado la última siesta (t_fin)
+//  Y rellena ese hueco con tantas siestas como quepan respetando
+//  ventanas mínimas y máximas.
+//
+//  La siesta inmediatamente anterior a un evento se ancla para que
+//  su DESPERTAR = evento - margenEvento.
+//
+function generarSecuencia(despPrimero, esPrimera, ventanaExtra, eventos) {
+  const advertencias = [];
+  const siestas = [];     // { inicio, dur, despertar, ventana, label? }
 
-  let t = despertar;
-  let siestas = [];
-  let numSiesta = 0;
+  // Construir lista de "anclas": momentos a los que el bebé debe estar despierto
+  // Cada ancla: { min, nombre, esEvento }
+  const anclas = eventos.map(e => ({
+    min: e.min,
+    nombre: e.nombre || fmt(e.min),
+    esEvento: true,
+  }));
+  // Ancla final: hora de dormir (la calcularemos al final, aquí ponemos el máximo)
+  // No la añadimos como ancla dura; la manejamos al cerrar.
 
-  while (true) {
-    numSiesta++;
-    // Ventana de espera antes de esta siesta
-    const ventanaBase = (numSiesta === 1 && esPrimera)
-      ? P.ventanaPrimera
-      : P.ventanaMin + offset;
+  // Ordenar anclas
+  anclas.sort((a, b) => a.min - b.min);
 
-    const inicioSiesta = t + ventanaBase;
+  // Segmentos: [ [t_desde, t_hasta_despertar, anclaOrigen], ... ]
+  // t_desde  = minuto desde el que el bebé está despierto al inicio del segmento
+  // t_hasta  = minuto en que debe estar despierto para el siguiente ancla
+  //            (= ancla.min - margenEvento)  →  es el tope del DESPERTAR de la última siesta
+  // Si no hay anclas → un solo segmento hasta la noche.
 
-    // ¿Aún podemos empezar una siesta a tiempo?
-    if (inicioSiesta > P.ultimoInicioS) break;
+  // Función que rellena siestas en un segmento
+  function rellenarSegmento(tDesde, tHastaDesp, esPrimeraSeg, etiquetaFin) {
+    // tHastaDesp: la última siesta del segmento debe DESPERTAR antes de este minuto
+    // Si tHastaDesp es null → solo limitamos por ultimoInicioS y dormirMax
 
-    // ¿Si después de esta siesta + ventana noche podemos dormir a tiempo?
-    const durSiesta = Math.round((P.durMin + P.durMax) / 2); // duración estimada media
-    const despertarTras = inicioSiesta + durSiesta;
-    const dormirTras = despertarTras + P.ventanaNoche;
+    let t = tDesde;
+    let numLocal = 0;
+    const siestasLocal = [];
 
-    // Si ya no podemos dormir dentro del rango → no añadimos más siestas
-    if (dormirTras > P.dormirMax + 15) break;
+    while (true) {
+      numLocal++;
+      const ventana = (numLocal === 1 && esPrimeraSeg)
+        ? P.ventanaPrimera
+        : P.ventanaMin + ventanaExtra;
 
-    // Duración real (ligera variación decorativa, fija por índice para reproducibilidad)
-    const dur = P.durMin + ((numSiesta * 7 + offset) % (P.durMax - P.durMin + 1));
-    const despertar2 = inicioSiesta + dur;
-    const vReal = inicioSiesta - t;
+      const inicioCandiato = t + ventana;
 
-    siestas.push({ inicio: inicioSiesta, dur, despertar: despertar2, ventana: vReal });
-    t = despertar2;
+      // Si hay un tope de despertar (ancla de evento):
+      // La siesta debe terminar (despertar) ≤ tHastaDesp
+      // → inicio + durMedia ≤ tHastaDesp
+      // → inicio ≤ tHastaDesp - durMedia
+      if (tHastaDesp !== null) {
+        const inicioMax = tHastaDesp - P.durMedia;
 
-    // Si con la siguiente ventana ya no cabe otra siesta, paramos
-    const sigInicio = t + P.ventanaMin;
-    if (sigInicio > P.ultimoInicioS) break;
+        if (inicioCandiato > inicioMax) {
+          // No cabe ninguna siesta más en este segmento antes del evento
+          break;
+        }
+
+        // ¿Cabe exactamente una más que termine justo a tiempo?
+        // Colocamos la siesta lo más tarde posible para maximizar la ventana:
+        // pero respetando ventanaMin desde t.
+        // Comprobamos también si después de esta siesta cabe otra.
+        const finSiesta = inicioCandiato + P.durMedia;
+        const margenParaOtra = tHastaDesp - finSiesta - P.ventanaMin - P.durMedia;
+
+        // Si ya no cabría otra siesta más (margenParaOtra < 0),
+        // anclamos esta última siesta para que despierte exactamente a tHastaDesp.
+        // inicio = tHastaDesp - dur
+        let inicioFinal = inicioCandiato;
+        if (margenParaOtra < 0) {
+          // Esta es la última del segmento → anclarla al evento
+          inicioFinal = tHastaDesp - P.durMedia;
+          if (inicioFinal < t + P.ventanaMin - 5) {
+            // La ventana resultante sería demasiado corta → no cabe
+            break;
+          }
+        }
+
+        const vReal = inicioFinal - t;
+        if (vReal < P.ventanaMin * 0.7) break; // ventana demasiado corta
+
+        const dur = calcDur(siestas.length + siestasLocal.length, ventanaExtra);
+        const despertar2 = inicioFinal + dur;
+        siestasLocal.push({ inicio: inicioFinal, dur, despertar: despertar2, ventana: vReal });
+        t = despertar2;
+
+        // Si ya llegamos al tope, salimos
+        if (t >= tHastaDesp - 5) break;
+
+      } else {
+        // Sin tope de ancla → límite normal (hora de dormir)
+        if (inicioCandiato > P.ultimoInicioS) break;
+        const finEstimado = inicioCandiato + P.durMedia;
+        if (finEstimado + P.ventanaNoche > P.dormirMax + 25) break;
+
+        const dur = calcDur(siestas.length + siestasLocal.length, ventanaExtra);
+        const despertar2 = inicioCandiato + dur;
+        siestasLocal.push({ inicio: inicioCandiato, dur, despertar: despertar2, ventana: ventana + ventanaExtra });
+        t = despertar2;
+
+        if (t + P.ventanaMin > P.ultimoInicioS) break;
+      }
+    }
+
+    return { siestasLocal, tFinal: t };
   }
 
-  // Calcular hora de dormir
-  const ultimoDespertar = siestas.length > 0 ? siestas[siestas.length-1].despertar : despertar;
-  let dormir = ultimoDespertar + P.ventanaNoche;
+  // Duración decorativa reproducible
+  function calcDur(idx, extra) {
+    return P.durMin + ((idx * 7 + extra) % (P.durMax - P.durMin + 1));
+  }
+
+  // ── Procesar segmentos ────────────────────────────────────
+  let tActual = despPrimero;
+  let primerSeg = true;
+
+  for (let i = 0; i < anclas.length; i++) {
+    const ancla = anclas[i];
+    const tHastaDesp = ancla.min - P.margenEvento; // el bebé debe estar despierto aquí
+
+    // Validar que el evento no sea demasiado pronto
+    if (tHastaDesp <= tActual) {
+      advertencias.push(`❌ El evento "${ancla.nombre}" (${fmt(ancla.min)}) es demasiado pronto: el bebé ya estaría despierto desde ${fmt(tActual)}. No hace falta ajustar nada, pero revisa el horario.`);
+      // Continuar con tActual como está
+      continue;
+    }
+
+    const { siestasLocal, tFinal } = rellenarSegmento(tActual, tHastaDesp, primerSeg, ancla.nombre);
+
+    // Comprobar que la última siesta despierta a tiempo
+    if (siestasLocal.length > 0) {
+      const ultima = siestasLocal[siestasLocal.length - 1];
+      if (ultima.despertar > tHastaDesp + 2) {
+        advertencias.push(`⚠️ No es posible encajar una siesta que despierte exactamente 20 min antes del evento "${ancla.nombre}". La siesta más cercana termina a las ${fmt(ultima.despertar)}.`);
+      }
+    } else {
+      // Sin siestas en este segmento — ¿la ventana es suficientemente grande?
+      const ventanaDisponible = tHastaDesp - tActual;
+      if (ventanaDisponible < P.ventanaMin + P.durMin) {
+        advertencias.push(`ℹ️ No cabe ninguna siesta entre ${fmt(tActual)} y el evento "${ancla.nombre}" (${fmt(ancla.min)}): la ventana disponible (${ventanaDisponible} min) es demasiado corta.`);
+      }
+    }
+
+    siestas.push(...siestasLocal);
+    tActual = ancla.min + P.margenEvento; // tras el evento el bebé lleva margenEvento min despierto
+    primerSeg = false;
+  }
+
+  // ── Segmento final: desde tActual hasta la noche ──────────
+  const { siestasLocal: siestasFinales } = rellenarSegmento(tActual, null, primerSeg, 'noche');
+  siestas.push(...siestasFinales);
+  tActual = siestasFinales.length > 0
+    ? siestasFinales[siestasFinales.length-1].despertar
+    : tActual;
+
+  // ── Hora de dormir ────────────────────────────────────────
+  let dormir = tActual + P.ventanaNoche;
   if (dormir < P.dormirMin) dormir = P.dormirMin;
   if (dormir > P.dormirMax) dormir = P.dormirMax;
-  const ventanaFinal = dormir - ultimoDespertar;
+  const ventanaFinal = dormir - tActual;
 
-  return { siestas, dormir, ventanaFinal };
+  return { siestas, dormir, ventanaFinal, advertencias };
 }
 
-// ── Renderiza una secuencia como HTML ───────────────────────
-function renderSecuencia(seq) {
-  if (seq.siestas.length === 0) {
-    return `<div class="aviso">🌙 Con este horario no caben siestas. Hora de dormir: <strong>${fmt(seq.dormir)}</strong></div>`;
+// ── Render ───────────────────────────────────────────────────
+function renderSecuencia(seq, eventos) {
+  let html = '';
+
+  seq.advertencias.forEach(a => {
+    const cls = a.startsWith('❌') ? 'alerta-err' : a.startsWith('⚠️') ? 'alerta-warn' : 'alerta-info';
+    html += `<div class="alerta ${cls}">${a}</div>`;
+  });
+
+  // Mezclar siestas + eventos en timeline
+  const items = [];
+  seq.siestas.forEach((s, i) => items.push({ tipo: 'siesta', idx: i+1, min: s.inicio, data: s }));
+  eventos.forEach(ev => items.push({ tipo: 'evento', min: ev.min, data: ev }));
+  items.sort((a, b) => a.min - b.min);
+
+  if (items.length === 0) {
+    html += `<div class="alerta alerta-info">🌙 Con este horario no caben siestas. Hora de dormir: <strong>${fmt(seq.dormir)}</strong></div>`;
+    return html;
   }
 
-  let html = '';
-  seq.siestas.forEach((s, i) => {
-    html += `<div class="siesta-card">
-      <div class="siesta-num">${i+1}</div>
-      <div class="siesta-info">
-        <div class="hora">Siesta ${i+1}: ${fmt(s.inicio)}</div>
+  html += '<div class="timeline">';
+  items.forEach(item => {
+    const color = item.tipo === 'siesta' ? 'var(--rose)' : 'var(--amber)';
+    html += `<div class="tl-item"><div class="tl-dot" style="color:${color};background:${color}"></div>`;
+
+    if (item.tipo === 'siesta') {
+      const s = item.data;
+      html += `<div class="siesta-card">
+        <div class="hora">Siesta ${item.idx}: ${fmt(s.inicio)}</div>
         <div class="detalle">
           Ventana: ${s.ventana} min &nbsp;·&nbsp;
           Duración aprox: ${s.dur} min &nbsp;·&nbsp;
           Despertar: ~${fmt(s.despertar)}
         </div>
-      </div>
-    </div>`;
+      </div>`;
+    } else {
+      const ev = item.data;
+      html += `<div class="evento-card">
+        <div class="hora">🗓 ${ev.nombre ? ev.nombre + ' — ' : ''}${fmt(ev.min)}</div>
+        <div class="detalle">Bebé despierto desde: ~${fmt(ev.min - P.margenEvento)} (${P.margenEvento} min antes)</div>
+      </div>`;
+    }
+    html += '</div>';
   });
+  html += '</div>';
 
   html += `<div class="dormir-card">
-    <div class="dormir-icon">🌙</div>
-    <div class="dormir-info">
-      <div class="hora">Hora de dormir: ${fmt(seq.dormir)}</div>
-      <div class="detalle">Ventana final: ${seq.ventanaFinal} min · ${seq.siestas.length} siesta${seq.siestas.length!==1?'s':''}</div>
-    </div>
+    <div class="hora">🌙 Hora de dormir: ${fmt(seq.dormir)}</div>
+    <div class="detalle">Ventana final: ${seq.ventanaFinal} min · ${seq.siestas.length} siesta${seq.siestas.length!==1?'s':''}</div>
   </div>`;
 
   return html;
 }
 
-// ── Cálculo principal ───────────────────────────────────────
+// ── Calcular ─────────────────────────────────────────────────
 function calcular() {
   const val = document.getElementById('ultima').value;
   if (!val) { alert('Introduce la hora del último despertar'); return; }
   const [h, m] = val.split(':').map(Number);
   const despertar = h * 60 + m;
   const esPrimera = document.getElementById('inicioDia').checked;
+  const eventos = getEventos();
 
-  const seqA = generarSecuencia(despertar, esPrimera, 0);
-  const seqB = generarSecuencia(despertar, esPrimera, 10); // variante con ventanas un poco más largas
+  const seqA = generarSecuencia(despertar, esPrimera, 0,  eventos);
+  const seqB = generarSecuencia(despertar, esPrimera, 10, eventos);
 
-  // ¿Son realmente distintas?
   const distintas = seqA.siestas.length !== seqB.siestas.length
     || seqA.dormir !== seqB.dormir
     || (seqA.siestas.length > 0 && seqB.siestas.length > 0 &&
         seqA.siestas[0].inicio !== seqB.siestas[0].inicio);
 
   let out = '';
-
   if (distintas) {
-    out += `<div class="tabs">
-      <button class="tab activa" id="tabA" onclick="verTab('A')">Opción A &mdash; ${seqA.siestas.length} siesta${seqA.siestas.length!==1?'s':''}</button>
-      <button class="tab" id="tabB" onclick="verTab('B')">Opción B &mdash; ${seqB.siestas.length} siesta${seqB.siestas.length!==1?'s':''}</button>
+    out = `<div class="tabs">
+      <button class="tab activa" id="tabA" onclick="verTab('A')">Opción A — ${seqA.siestas.length} siesta${seqA.siestas.length!==1?'s':''}</button>
+      <button class="tab"        id="tabB" onclick="verTab('B')">Opción B — ${seqB.siestas.length} siesta${seqB.siestas.length!==1?'s':''}</button>
     </div>
-    <div id="panelA">${renderSecuencia(seqA)}</div>
-    <div id="panelB" style="display:none">${renderSecuencia(seqB)}</div>`;
+    <div id="panelA">${renderSecuencia(seqA, eventos)}</div>
+    <div id="panelB" style="display:none">${renderSecuencia(seqB, eventos)}</div>`;
   } else {
-    // Una sola opción
-    out += `<div class="divider"></div>${renderSecuencia(seqA)}`;
+    out = `<div class="divider"></div>${renderSecuencia(seqA, eventos)}`;
   }
 
   document.getElementById('resultado').innerHTML = out;
@@ -397,6 +536,5 @@ function verTab(cual) {
   document.getElementById('tabB').className = 'tab' + (cual === 'B' ? ' activa' : '');
 }
 </script>
-
 </body>
 </html>
